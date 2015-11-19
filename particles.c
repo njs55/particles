@@ -73,7 +73,7 @@ int main(int argc, char** argv){
   
   // getting number of particles
   n = atoi(argv[1]);
-printf("n=%d\n",n);
+
   // initializing MPI structures and checking p is odd
   MPI_Init(&argc, &argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
@@ -85,7 +85,6 @@ printf("n=%d\n",n);
       return 0;
     }
   }
-  printf("intiall p = %d\n",p);
   srand(myRank+myRank*CONSTANT);
 
   // acquiring memory for particle arrays
@@ -100,7 +99,7 @@ printf("n=%d\n",n);
       globals = (struct Particle *) calloc((ceil((double)n/p))*p , sizeof(struct Particle));
 
       // YOUR CODE GOES HERE (reading particles from file)
-      printf("read file\n");
+      
       read_file(globals, n,  argv[2]);
 
     }
@@ -128,7 +127,7 @@ printf("n=%d\n",n);
     
     count_mpi = number * (sizeof(struct Particle)) /sizeof(float);
     
-  printf("before scatter\n");
+  
     MPI_Scatter(globals, 
 				count_mpi,
 				MPI_FLOAT,
@@ -137,7 +136,6 @@ printf("n=%d\n",n);
 				MPI_FLOAT,
 				0,
 				MPI_COMM_WORLD);
-  printf("after scatter\n");
     
     
   } else {
@@ -159,10 +157,10 @@ printf("n=%d\n",n);
   // YOUR CODE GOES HERE (ring algorithm)
   
   MPI_Request request_send[4];
-  printf("Step 1\n");
+  
   int nextRank = (myRank + 1) % p;
   int prevRank = (myRank - 1 + p) %  p;
-  printf("yo\n");
+  
 		MPI_Isend(locals, 
 				count_mpi, 
 				MPI_FLOAT,
@@ -170,7 +168,7 @@ printf("n=%d\n",n);
 				tag,
 				MPI_COMM_WORLD,
 				&request_send[0]);
-		 printf("yo2\n");
+	
 		MPI_Recv(remotes, 
 				count_mpi,
 				MPI_FLOAT,			
@@ -178,9 +176,9 @@ printf("n=%d\n",n);
 				tag,
 				MPI_COMM_WORLD,
 				&status);			
-		 printf("yo232\n");		
+			
 		compute_interaction(locals, remotes, number);		
-		 printf("yo3\n");
+		
 		MPI_Isend(remotes, 
 				count_mpi,
 				MPI_FLOAT,				 
@@ -189,10 +187,9 @@ printf("n=%d\n",n);
 				MPI_COMM_WORLD,
 				&request_send[1]);
 				
-			 printf("yo before loop\n");
-			 printf("value of p = %d\n", p);	
+		
 		for(int i=1; i<(p-1)/2; i++){
-			 printf("yo in loop\n");
+			
 			MPI_Recv(remotes, 
 					count_mpi,
 					MPI_FLOAT,			
@@ -216,7 +213,7 @@ printf("n=%d\n",n);
 	int OG_rank = ((myRank - (p-1)/2 + p) % p); //maybe call get_OG_rank function here and not sure where to increment rank_count
 	int final_rank = ((myRank + (p-1)/2 + p) % p);
 
-    printf("Yo from out of the loop\n");
+    
 	//send remote back to original process
 	MPI_Isend(remotes, 
 			  count_mpi,
@@ -292,7 +289,7 @@ float random_value(int type){
 void print_particles(struct Particle *particles, int n){
   int j;
   printf("Index\tx\ty\tmass\tfx\tfy\n");
-  printf("value of n %d\n", n);
+  
   for(j = 0; j < n; j++){
     printf("%d\t%f\t%f\t%f\t%f\t%f\n",j,particles[j].x,particles[j].y,particles[j].mass,particles[j].fx,particles[j].fy);
   }
