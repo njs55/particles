@@ -1,0 +1,9 @@
+#!/bin/bash
+#SBATCH -J particles_511_100000        # Job Name
+#SBATCH -o particles_511_100000.o%j    # Output and error file name (%j expands to jobID)
+#SBATCH -n 511                # Total number of mpi tasks requested
+#SBATCH -p normal          # Queue (partition) name -- normal, development, etc.
+#SBATCH -t 00:05:00        # Run time (hh:mm:ss) - 5 minutes
+#SBATCH -A TG-CCR150026
+
+ibrun ./particles 100000
