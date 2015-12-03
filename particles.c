@@ -2,7 +2,7 @@
  * University of Pittsburgh
  * Department of Computer Science
  * CS1645: Introduction to HPC Systems
- * Student: 
+ * Student: Nathan Spangler
  * Instructor: Bryan Mills, University of Pittsburgh
  * MPI particle-interaction code. 
  */
